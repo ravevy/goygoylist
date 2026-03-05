@@ -1,9 +1,12 @@
-import ProtectedRoute from "@/components/protected-route";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-export default function Dashboard() {
-  return (
-    <ProtectedRoute>
-      <div>Dashboard</div>
-    </ProtectedRoute>
-  );
+export default function Index() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/dashboard");
+  }, [router]);
+
+  return null;
 }
