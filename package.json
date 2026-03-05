@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
-    "format": "prettier --write 'src/**/*.{js,ts,tsx,json,css,scss,md}'"
+    "format": "prettier --write 'src/**/*.{js,ts,tsx,json,css,scss,md}'",
+    "prepare": "husky"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
@@ -27,10 +28,21 @@
     "eslint": "^9.39.3",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.2",
     "postcss": "^8.5.8",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.2.1",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{json,css,scss,md}": [
+      "prettier --write"
+    ]
   }
 }
