@@ -1,9 +1,10 @@
-import ProtectedRoute from "@/components/protected-route";
+import { requireAuth } from "@/lib/requireAuth";
 
 export default function Profile() {
-  return (
-    <ProtectedRoute>
-      <div>Profile</div>
-    </ProtectedRoute>
-  );
+  return <div>Profile</div>;
 }
+
+export const getServerSideProps = async () => {
+  const auth = await requireAuth();
+  if ("redirect" in auth) return auth;
+};

@@ -1,11 +1,12 @@
-import ProtectedRoute from "@/components/protected-route";
+import { requireAuth } from "@/lib/requireAuth";
 import { useRouter } from "next/router";
 
 export default function ListDetail() {
   const { query } = useRouter();
-  return (
-    <ProtectedRoute>
-      <div>List Detail: {query.id}</div>
-    </ProtectedRoute>
-  );
+  return <div>List Detail: {query.id}</div>;
 }
+
+export const getServerSideProps = async () => {
+  const auth = await requireAuth();
+  if ("redirect" in auth) return auth;
+};
