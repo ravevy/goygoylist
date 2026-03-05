@@ -1,4 +1,5 @@
-import { requireAuth } from '@/lib/requireAuth'
+import { requireAuth } from '@/lib/supabase/requireAuth'
+import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 
 export default function ListDetail() {
@@ -6,7 +7,11 @@ export default function ListDetail() {
   return <div>List Detail: {query.id}</div>
 }
 
-export const getServerSideProps = async () => {
-  const auth = await requireAuth()
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const auth = await requireAuth(context)
   if ('redirect' in auth) return auth
+
+  return { props: {} }
 }
