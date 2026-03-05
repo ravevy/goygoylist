@@ -1,27 +1,29 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { supabase } from "../lib/supabaseClient";
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { supabase } from '../lib/supabaseClient'
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password,
-    });
-    if (error) return alert(error.message);
-    router.push("/dashboard");
-  };
+      password
+    })
+    if (error) return alert(error.message)
+    console.log(data)
+
+    router.push('/dashboard')
+  }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex h-screen items-center justify-center">
       <form
         onSubmit={handleLogin}
-        className="flex flex-col gap-4 p-6 border rounded"
+        className="flex flex-col gap-4 rounded border p-6"
       >
         <input
           type="email"
@@ -35,12 +37,12 @@ export default function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 cursor-pointer"
+          className="cursor-pointer border p-2"
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+        <button type="submit" className="rounded bg-blue-500 p-2 text-white">
           Login
         </button>
       </form>
     </div>
-  );
+  )
 }

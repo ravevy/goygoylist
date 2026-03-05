@@ -1,10 +1,10 @@
-import { requireAuth } from "@/lib/requireAuth";
+import { requireAuth } from '@/lib/requireAuth'
 
 export default function Dashboard() {
-  return <div>Dashboard</div>;
+  return <div>Dashboard</div>
 }
 
 export const getServerSideProps = async () => {
-  const auth = await requireAuth();
-  if ("redirect" in auth) return auth;
-};
+  const auth = await requireAuth()
+  if ('redirect' in auth) return auth
+}

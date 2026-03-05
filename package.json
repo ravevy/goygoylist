@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint 'src/**/*.{js,ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
+    "format": "prettier --write 'src/**/*.{js,ts,tsx,json,css,scss,md}'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
@@ -19,10 +21,15 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "autoprefixer": "^10.4.27",
-    "eslint": "^9",
+    "eslint": "^9.39.3",
     "eslint-config-next": "16.1.6",
+    "eslint-config-prettier": "^10.1.8",
     "postcss": "^8.5.8",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.2.1",
     "typescript": "^5"
   }
