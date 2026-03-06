@@ -12,6 +12,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@hackernoon/pixel-icon-library": "^1.0.6",
     "@supabase/supabase-js": "^2.98.0",
     "nes.css": "^2.2.1",
     "next": "16.1.6",
