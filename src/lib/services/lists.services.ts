@@ -1,66 +1,123 @@
 import { supabase } from '../supabase/client'
 import {
-  ListInsertSchema,
+  ListInsertSchemaType,
   listInsertSchema,
-  listsSchema,
+  listSchema,
+  ListSchemaType,
   listsWithItemsSchema,
-  ListsWithItemsSchema,
-  ListUpdateSchema,
+  ListsWithItemsSchemaType,
+  ListUpdateSchemaType,
   listUpdateSchema,
-  ListWithItemsSchema,
+  ListWithItemsSchemaType,
   listWithItemsSchema
 } from '../validation/lists.schema'
+import { GetResults } from '@/types/shared.types'
 
-export async function getListsWithItems(): Promise<ListsWithItemsSchema> {
+export async function getListsWithItems(): Promise<
+  GetResults<ListsWithItemsSchemaType>
+> {
   const { data, error } = await supabase
     .from('list_with_items_ordered')
     .select('*')
     .order('created_at', { ascending: false })
 
-  if (error) throw error
+  if (error) {
+    return { success: false, type: 'supabase', error }
+  }
 
-  return listsWithItemsSchema.parse(data)
+  const parsed = listsWithItemsSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return { success: false, type: 'validation', error: parsed.error }
+  }
+
+  return { success: true, data: parsed.data }
 }
 
 export async function getListWithItems(
   listId: string
-): Promise<ListWithItemsSchema> {
+): Promise<GetResults<ListWithItemsSchemaType>> {
   const { data, error } = await supabase
     .from('list_with_items_ordered')
     .select('*')
     .eq('id', listId)
     .single()
 
-  if (error) throw error
+  if (error) {
+    return { success: false, type: 'supabase', error }
+  }
 
-  return listWithItemsSchema.parse(data)
+  const parsed = listWithItemsSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return { success: false, type: 'validation', error: parsed.error }
+  }
+
+  return { success: true, data: parsed.data }
 }
 
-export async function insertList(payload: ListInsertSchema) {
-  const validatedPayload = listInsertSchema.parse(payload)
+export async function insertList(
+  payload: ListInsertSchemaType
+): Promise<GetResults<ListSchemaType>> {
+  const payloadValidation = listInsertSchema.safeParse(payload)
+
+  if (!payloadValidation.success) {
+    return {
+      success: false,
+      type: 'validation',
+      error: payloadValidation.error
+    }
+  }
 
   const { data, error } = await supabase
     .from('lists')
-    .insert(validatedPayload)
+    .insert(payloadValidation.data)
     .select()
     .single()
 
-  if (error) throw error
+  if (error) {
+    return { success: false, type: 'supabase', error }
+  }
 
-  return listsSchema.parse(data)
+  const parsed = listSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return { success: false, type: 'validation', error: parsed.error }
+  }
+
+  return { success: true, data: parsed.data }
 }
 
-export async function updateList(listId: string, payload: ListUpdateSchema) {
-  const validatedPayload = listUpdateSchema.parse(payload)
+export async function updateList(
+  listId: string,
+  payload: ListUpdateSchemaType
+): Promise<GetResults<ListSchemaType>> {
+  const payloadValidation = listUpdateSchema.safeParse(payload)
+
+  if (!payloadValidation.success) {
+    return {
+      success: false,
+      type: 'validation',
+      error: payloadValidation.error
+    }
+  }
 
   const { data, error } = await supabase
     .from('lists')
-    .update(validatedPayload)
+    .update(payloadValidation.data)
     .eq('id', listId)
     .select()
     .single()
 
-  if (error) throw error
+  if (error) {
+    return { success: false, type: 'supabase', error }
+  }
 
-  return listsSchema.parse(data)
+  const parsed = listSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return { success: false, type: 'validation', error: parsed.error }
+  }
+
+  return { success: true, data: parsed.data }
 }

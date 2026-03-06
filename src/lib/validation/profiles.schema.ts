@@ -11,6 +11,6 @@ export const profileUpdateSchema = z.object({
   avatar_url: z.string().nullable().optional()
 })
 
-export type ProfileSchema = z.infer<typeof profileSchema>
+export type ProfileSchemaType = z.infer<typeof profileSchema>
 
-export type ProfileUpdateSchema = z.infer<typeof profileUpdateSchema>
+export type ProfileUpdateSchemaType = z.infer<typeof profileUpdateSchema>

@@ -1,42 +1,99 @@
+import { GetResults } from '@/types/shared.types'
 import { supabase } from '../supabase/client'
 import {
-  ListItemInsertSchema,
+  ListItemInsertSchemaType,
   listItemInsertSchema,
+  ListItemSchemaType,
+  listItemSchema,
   listItemUpdateSchema,
-  ListItemUpdateSchema
+  ListItemUpdateSchemaType
 } from '../validation/listItems.schema'
 
 export async function insertListItem(
   listId: string,
-  payload: ListItemInsertSchema
-) {
-  const validatedPayload = listItemInsertSchema.parse(payload)
+  payload: ListItemInsertSchemaType
+): Promise<GetResults<ListItemInsertSchemaType>> {
+  const validatedPayload = listItemInsertSchema.safeParse(payload)
+
+  if (!validatedPayload.success) {
+    return {
+      success: false,
+      type: 'validation',
+      error: validatedPayload.error
+    }
+  }
 
   const { data, error } = await supabase
     .from('list_items')
-    .insert({ ...validatedPayload, list_id: listId })
+    .insert({ ...validatedPayload.data, list_id: listId })
     .select()
     .single()
 
-  if (error) throw error
+  if (error) {
+    return {
+      success: false,
+      type: 'supabase',
+      error
+    }
+  }
 
-  return data
+  const parsed = listItemSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      type: 'validation',
+      error: parsed.error
+    }
+  }
+
+  return {
+    success: true,
+    data: parsed.data
+  }
 }
 
 export async function updateListItem(
   listItemId: string,
-  payload: ListItemUpdateSchema
-) {
-  const validatedPayload = listItemUpdateSchema.parse(payload)
+  payload: ListItemUpdateSchemaType
+): Promise<GetResults<ListItemSchemaType>> {
+  const validatedPayload = listItemUpdateSchema.safeParse(payload)
+
+  if (!validatedPayload.success) {
+    return {
+      success: false,
+      type: 'validation',
+      error: validatedPayload.error
+    }
+  }
 
   const { data, error } = await supabase
     .from('list_items')
-    .update(validatedPayload)
+    .update(validatedPayload.data)
     .eq('id', listItemId)
     .select()
     .single()
 
-  if (error) throw error
+  if (error) {
+    return {
+      success: false,
+      type: 'supabase',
+      error
+    }
+  }
 
-  return data
+  const parsed = listItemSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      type: 'validation',
+      error: parsed.error
+    }
+  }
+
+  return {
+    success: true,
+    data: parsed.data
+  }
 }
