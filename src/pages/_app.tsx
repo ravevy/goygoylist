@@ -4,9 +4,9 @@ import '@hackernoon/pixel-icon-library/fonts/iconfont.css'
 import type { AppProps } from 'next/app'
 import ProtectedRoute from '@/components/protectedRoute'
 import { ThemeProvider } from '@/context/themeContext'
-import ThemeToggleButton from '@/components/features/ThemeToggleButton'
+import { Layout } from '@/components/layout'
 
-const publicPages = ['/login']
+const publicPages = ['/login', '/404']
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const isPublicPage = publicPages.includes(router.pathname)
@@ -22,7 +22,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <ThemeProvider>
       <ProtectedRoute>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ProtectedRoute>
     </ThemeProvider>
   )

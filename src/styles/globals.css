@@ -1,5 +1,25 @@
 @import 'tailwindcss';
 
+/* Light theme */
+:root {
+  --body-bg: #f0ead6;
+  --body-text: #212529;
+}
+
+/* Dark theme */
+[data-theme='dark'] {
+  --body-bg: #212529;
+  --body-text: #ffffff;
+}
+
+body {
+  background-color: var(--body-bg) !important;
+  color: var(--body-text) !important;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

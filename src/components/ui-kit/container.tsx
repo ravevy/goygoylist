@@ -30,6 +30,7 @@ export const Container = ({
     ...variants.map((v) => variantClassMap[v]),
     theme === 'dark' ? 'is-dark' : '',
     title ? 'with-title' : '',
+    'transition-all duration-[300]',
     className
   ]
     .filter(Boolean)
