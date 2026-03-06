@@ -1,4 +1,5 @@
 import { useTheme } from '@/context/themeContext'
+import Link from 'next/link'
 import React from 'react'
 
 type Variant =
@@ -19,6 +20,7 @@ export const Button = ({
   variant = 'default',
   href,
   children,
+  className,
   ...props
 }: ButtonProps) => {
   const { theme } = useTheme()
@@ -31,17 +33,17 @@ export const Button = ({
     disabled: 'is-disabled'
   }
 
-  const btnClass = `nes-btn ${props.disabled ? 'disabled' : variantClassMap[variant]}`
+  const btnClass = `nes-btn ${props.disabled ? 'disabled' : variantClassMap[variant]} ${className}`
 
   if (href) {
     return (
-      <a
+      <Link
         href={href}
         className={btnClass}
         {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {children}
-      </a>
+      </Link>
     )
   }
 

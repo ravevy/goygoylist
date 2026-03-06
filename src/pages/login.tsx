@@ -6,6 +6,7 @@ import { Container } from '@/components/ui-kit/container'
 import { Button } from '@/components/ui-kit/button'
 import { useTheme } from '@/context/themeContext'
 import ThemeToggleButton from '@/components/features/ThemeToggleButton'
+import Image from 'next/image'
 
 export default function Login() {
   const { theme } = useTheme()
@@ -34,7 +35,8 @@ export default function Login() {
       <div className="absolute top-4 right-4">
         <ThemeToggleButton size="l" />
       </div>
-      <img
+      <Image
+        alt={'login background image'}
         src={
           theme === 'dark'
             ? '/assets/login-background-night.png'
