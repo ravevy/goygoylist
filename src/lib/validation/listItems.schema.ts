@@ -17,7 +17,8 @@ export const listItemInsertSchema = z.object({
 
 export const listItemUpdateSchema = z.object({
   title: z.string().optional(),
-  description: z.string().nullable().optional()
+  description: z.string().nullable().optional(),
+  completed_at: z.string().nullable().optional()
 })
 
 export type ListItemSchemaType = z.infer<typeof listItemSchema>

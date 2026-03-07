@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import SummaryCard from './SummaryCard'
 import { Spinner } from '../ui-kit/spinner'
 import { Button } from '../ui-kit/button'
+import { updateListItem } from '@/lib/services/listItems.services'
 
 export default function SummaryCardList() {
   const [loading, setLoading] = useState(true)
@@ -25,6 +26,26 @@ export default function SummaryCardList() {
     }
 
     setLoading(false)
+  }
+
+  const handleUpdateListItem = async (listId: string, checked: boolean) => {
+    const completedState = checked ? new Date().toISOString() : null
+    const updatedItem = await updateListItem(listId, {
+      completed_at: completedState
+    })
+
+    if (updatedItem.success) {
+      setLists(
+        lists.map((list) => ({
+          ...list,
+          items: list.items.map((item) =>
+            item.id === updatedItem.data.id
+              ? { ...item, completed_at: completedState }
+              : item
+          )
+        }))
+      )
+    }
   }
 
   useEffect(() => {
@@ -63,7 +84,7 @@ export default function SummaryCardList() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {lists.map((list) => (
         <SummaryCard
           key={list.id}
@@ -72,7 +93,8 @@ export default function SummaryCardList() {
             id: item.id,
             title: item.title,
             description: item.description || undefined,
-            completed_at: item.completed_at || undefined
+            completed_at: item.completed_at || undefined,
+            handleChange: (checked) => handleUpdateListItem(item.id, checked)
           }))}
           title={list.title}
         />

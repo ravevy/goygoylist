@@ -88,7 +88,7 @@ const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
                 __html: `
                 @keyframes spin-pixel {
                     0% { opacity: 0; }
-                    1% { opacity: 1; }
+                    50% { opacity: 1; }
                     100% { opacity: 0; }
                 }
                 .pixel-1 { animation: spin-pixel 0.8s ease-in-out 0s infinite; }

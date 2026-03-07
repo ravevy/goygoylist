@@ -1,5 +1,6 @@
 import { Container } from '../ui-kit/container'
 import { Button } from '../ui-kit/button'
+import { Checkbox } from '../ui-kit/checkbox'
 
 export interface SummaryCardProps {
   id: string
@@ -9,6 +10,7 @@ export interface SummaryCardProps {
     title: string
     description?: string
     completed_at?: string
+    handleChange: (checked: boolean) => void
   }>
 }
 
@@ -18,9 +20,13 @@ export default function SummaryCard({ id, title, items }: SummaryCardProps) {
       <h1 className="underline">{title}</h1>
       <div className="flex flex-col overflow-hidden">
         {items.slice(0, 13).map((item) => (
-          <span className="text-sm" key={item.id}>
-            <input type="checkbox" value={item.completed_at} /> {item.title}
-          </span>
+          <Checkbox
+            key={item.id}
+            id={item.id}
+            label={item.title}
+            checked={Boolean(item.completed_at)}
+            onChange={item.handleChange}
+          />
         ))}
       </div>
       <Button className="ml-auto! w-fit scale-75" href={`/list/${id}`}>

@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Spinner } from './spinner'
 
 type CheckboxProps = {
   id: string
   label?: string
   checked?: boolean
-  onChange?: (checked: boolean) => void
+  onChange?: (checked: boolean) => Promise<void> | void
   dark?: boolean
   className?: string
 }
@@ -17,22 +18,37 @@ export const Checkbox = ({
   dark = false,
   className = ''
 }: CheckboxProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.(e.target.checked)
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newChecked = e.target.checked
+    setLoading(true)
+    try {
+      await onChange?.(newChecked)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <label
       htmlFor={id}
-      className={`flex items-center gap-2 text-xs ${className}`}
+      className={`flex flex-row items-center text-xs ${className}`}
     >
-      <input
-        id={id}
-        type="checkbox"
-        className={`nes-checkbox ${dark ? 'is-dark' : ''}`}
-        checked={checked}
-        onChange={handleChange}
-      />
+      {loading ? (
+        <Spinner
+          className="mr-[11.5px] ml-[5.5px] inline-block size-3"
+          variant="diamond"
+        />
+      ) : (
+        <input
+          id={id}
+          type="checkbox"
+          className={`nes-checkbox ${dark ? 'is-dark' : ''}`}
+          checked={checked}
+          onChange={handleChange}
+        />
+      )}
       {label && <span>{label}</span>}
     </label>
   )
