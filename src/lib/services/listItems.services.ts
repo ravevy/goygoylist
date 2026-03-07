@@ -54,7 +54,7 @@ export async function insertListItem(
 }
 
 export async function updateListItem(
-  listItemId: string,
+  itemId: string,
   payload: ListItemUpdateSchemaType
 ): Promise<GetResults<ListItemSchemaType>> {
   const validatedPayload = listItemUpdateSchema.safeParse(payload)
@@ -70,7 +70,7 @@ export async function updateListItem(
   const { data, error } = await supabase
     .from('list_items')
     .update(validatedPayload.data)
-    .eq('id', listItemId)
+    .eq('id', itemId)
     .select()
     .single()
 

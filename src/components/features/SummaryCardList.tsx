@@ -28,9 +28,9 @@ export default function SummaryCardList() {
     setLoading(false)
   }
 
-  const handleUpdateListItem = async (listId: string, checked: boolean) => {
+  const handleUpdateListItem = async (itemId: string, checked: boolean) => {
     const completedState = checked ? new Date().toISOString() : null
-    const updatedItem = await updateListItem(listId, {
+    const updatedItem = await updateListItem(itemId, {
       completed_at: completedState
     })
 
