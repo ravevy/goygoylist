@@ -49,7 +49,7 @@ export const Checkbox = ({
           onChange={handleChange}
         />
       )}
-      {label && <span>{label}</span>}
+      {label && <span className="leading-5">{label}</span>}
     </label>
   )
 }

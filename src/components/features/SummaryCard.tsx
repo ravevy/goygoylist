@@ -16,10 +16,10 @@ export interface SummaryCardProps {
 
 export default function SummaryCard({ id, title, items }: SummaryCardProps) {
   return (
-    <Container className="flex h-100 w-full flex-col outline-0 focus:outline-0!">
+    <Container className="flex h-105 w-full flex-col outline-0 focus:outline-0!">
       <h1 className="underline">{title}</h1>
       <div className="flex flex-col overflow-hidden">
-        {items.slice(0, 13).map((item) => (
+        {items.slice(0, 10).map((item) => (
           <Checkbox
             key={item.id}
             id={item.id}
@@ -29,7 +29,7 @@ export default function SummaryCard({ id, title, items }: SummaryCardProps) {
           />
         ))}
       </div>
-      <Button className="ml-auto! w-fit scale-75" href={`/list/${id}`}>
+      <Button className="mt-auto ml-auto! w-fit scale-75" href={`/list/${id}`}>
         See more
       </Button>
     </Container>
