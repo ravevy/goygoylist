@@ -6,7 +6,7 @@ export default function DashboardHeader() {
 
   return (
     <div className="flex w-full items-center justify-between">
-      <h5>Lists</h5>
+      <h1>Lists</h1>
       <Button onClick={() => setIsModalOpen(!isModalOpen)}>
         <i className="hn hn-plus-solid" />
       </Button>
