@@ -10,10 +10,12 @@ type Variant =
   | 'error'
   | 'disabled'
 
+type Size = 'sm' | 'md' | 'lg'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   href?: string
   children: React.ReactNode
+  size?: Size
 }
 
 export const Button = ({
@@ -21,6 +23,7 @@ export const Button = ({
   href,
   children,
   className,
+  size = 'lg',
   ...props
 }: ButtonProps) => {
   const { theme } = useTheme()
@@ -33,7 +36,13 @@ export const Button = ({
     disabled: 'is-disabled'
   }
 
-  const btnClass = `nes-btn ${props.disabled ? 'disabled' : variantClassMap[variant]} ${className}`
+  const sizeClassMap: Record<Size, string> = {
+    sm: 'text-[.625rem]! p-1!',
+    md: 'text-sm! p-2!',
+    lg: ''
+  }
+
+  const btnClass = `nes-btn ${props.disabled ? 'disabled' : variantClassMap[variant]} ${sizeClassMap[size]} ${className}`
 
   if (href) {
     return (
