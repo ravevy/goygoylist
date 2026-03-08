@@ -29,7 +29,11 @@ export default function SummaryCard({ id, title, items }: SummaryCardProps) {
           />
         ))}
       </div>
-      <Button className="mt-auto! ml-auto! w-fit scale-75" href={`/list/${id}`}>
+      <Button
+        size="sm"
+        className="mt-auto! ml-auto! w-fit"
+        href={`/list/${id}`}
+      >
         See more
       </Button>
     </Container>
