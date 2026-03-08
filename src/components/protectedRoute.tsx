@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '@/lib/supabase/client'
+import { Spinner } from './ui-kit/spinner'
 
 type ProtectedRouteProps = {
   children: ReactNode
@@ -36,7 +37,12 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return () => listener.subscription.unsubscribe()
   }, [router])
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading)
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <Spinner variant="diamond" className="size-10" />
+      </div>
+    )
 
   if (!isAuthenticated) return null
 
