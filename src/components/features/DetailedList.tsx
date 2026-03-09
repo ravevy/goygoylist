@@ -15,7 +15,7 @@ import {
   ListItemUpdateSchemaType
 } from '@/lib/validation/listItems.schema'
 import { Container } from '../ui-kit/container'
-import SummaryCardItem from './SummaryCardItem'
+import SummaryCardItem from './DetailedListItem'
 import { Balloon } from '../ui-kit/balloon'
 
 interface DetailedListProps {

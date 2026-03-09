@@ -5,7 +5,7 @@ import { ListItemUpdateSchemaType } from '@/lib/validation/listItems.schema'
 import { Spinner } from '../ui-kit/spinner'
 import { cx } from 'class-variance-authority'
 
-interface SummaryCardItemProps {
+interface DetailedListItemProps {
   id: string
   title: string
   description?: string | null
@@ -17,7 +17,7 @@ interface SummaryCardItemProps {
   handleRemove: () => Promise<void> | void
 }
 
-export default function SummaryCardItem({
+export default function DetailedListItem({
   id,
   title,
   description,
@@ -27,7 +27,7 @@ export default function SummaryCardItem({
   handleCheckboxChange,
   handleValueUpdate,
   handleRemove
-}: SummaryCardItemProps) {
+}: DetailedListItemProps) {
   const titleInputRef = useRef<HTMLInputElement>(null)
   const [titleValue, setTitleValue] = useState(title)
   const [descValue, setDescValue] = useState(description)
@@ -93,17 +93,17 @@ export default function SummaryCardItem({
                 tabIndex={1}
               />
             </span>
-            {description && (
-              <span className="flex w-full flex-nowrap">
-                <AutoGrowTextarea
-                  id="description"
-                  disabled={loading}
-                  value={descValue as string}
-                  setValue={(value) => setDescValue(value)}
-                  className="w-full border-b-2 border-dashed border-[white] text-xs! leading-5! text-[#666666] italic outline-0"
-                />
-              </span>
-            )}
+
+            <span className="flex w-full flex-nowrap">
+              <AutoGrowTextarea
+                id="description"
+                placeholder="You can add a description too!"
+                disabled={loading}
+                value={descValue as string}
+                setValue={(value) => setDescValue(value)}
+                className="border-initial w-full border-b-2 border-dashed text-xs! leading-5! text-[#666666] italic outline-0"
+              />
+            </span>
           </span>
           {!loading ? (
             <button
