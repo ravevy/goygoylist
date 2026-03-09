@@ -97,3 +97,25 @@ export async function updateListItem(
     data: parsed.data
   }
 }
+
+export async function removeListItem(
+  itemId: string
+): Promise<GetResults<null>> {
+  const { data, error } = await supabase
+    .from('list_items')
+    .delete()
+    .eq('id', itemId)
+
+  if (error) {
+    return {
+      success: false,
+      type: 'supabase',
+      error
+    }
+  }
+
+  return {
+    success: true,
+    data: data
+  }
+}

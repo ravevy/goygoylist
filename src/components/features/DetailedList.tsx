@@ -5,18 +5,24 @@ import { Spinner } from '../ui-kit/spinner'
 import { Button } from '../ui-kit/button'
 import {
   insertListItem,
+  removeListItem,
   updateListItem
 } from '@/lib/services/listItems.services'
 import { Checkbox } from '../ui-kit/checkbox'
 import { Input } from '../ui-kit/input'
-import { ListItemInsertSchemaType } from '@/lib/validation/listItems.schema'
+import {
+  ListItemInsertSchemaType,
+  ListItemUpdateSchemaType
+} from '@/lib/validation/listItems.schema'
 import { Container } from '../ui-kit/container'
+import SummaryCardItem from './SummaryCardItem'
 
 interface DetailedListProps {
   id: string
 }
 
 export default function DetailedList({ id }: DetailedListProps) {
+  const [updatingKey, setUpdatingKey] = useState<null | string>(null)
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState<ListWithItemsSchemaType>()
   const [error, setError] = useState<string | null>(null)
@@ -42,18 +48,48 @@ export default function DetailedList({ id }: DetailedListProps) {
     setLoading(false)
   }
 
-  const handleUpdateListItem = async (itemId: string, checked: boolean) => {
+  const toggleUpdate = (key: string) => {
+    if (updatingKey === key) {
+      setUpdatingKey(null)
+      return
+    }
+    setUpdatingKey(key)
+  }
+
+  const handleCheckListItem = async (itemId: string, checked: boolean) => {
     const completedState = checked ? new Date().toISOString() : null
-    const updatedItem = await updateListItem(itemId, {
+    const checkedItem = await updateListItem(itemId, {
       completed_at: completedState
     })
+
+    if (checkedItem.success && list) {
+      setList({
+        ...list,
+        items: list.items.map((item) =>
+          item.id === checkedItem.data.id
+            ? { ...item, completed_at: completedState }
+            : item
+        )
+      })
+    }
+  }
+
+  const handleUpdateListItem = async (
+    itemId: string,
+    payload: ListItemUpdateSchemaType
+  ) => {
+    const updatedItem = await updateListItem(itemId, payload)
 
     if (updatedItem.success && list) {
       setList({
         ...list,
         items: list.items.map((item) =>
           item.id === updatedItem.data.id
-            ? { ...item, completed_at: completedState }
+            ? {
+                ...item,
+                title: updatedItem.data.title ?? item.title,
+                description: updatedItem.data.description
+              }
             : item
         )
       })
@@ -75,6 +111,22 @@ export default function DetailedList({ id }: DetailedListProps) {
         setNewItem({
           title: '',
           description: null
+        })
+      }
+    }
+  }
+
+  const handleRemoveListItem = async (itemId: string) => {
+    if (list) {
+      const response = await removeListItem(itemId)
+
+      if (response.success) {
+        const listItems = [...list.items]
+        const removedItem = listItems.findIndex((i) => i.id === itemId)
+        listItems.splice(removedItem, 1)
+        setList({
+          ...list,
+          items: listItems
         })
       }
     }
@@ -115,14 +167,21 @@ export default function DetailedList({ id }: DetailedListProps) {
           </p>
         ) : (
           list?.items.map((item) => (
-            <Checkbox
+            <SummaryCardItem
               key={item.id}
               id={item.id}
-              label={item.title}
+              title={item.title}
               description={item.description}
-              checked={Boolean(item.completed_at)}
-              onChange={(checked) => handleUpdateListItem(item.id, checked)}
-              className="text-sm!"
+              completed_at={item.completed_at}
+              isUpdating={item.id === updatingKey}
+              toggleUpdate={() => toggleUpdate(item.id)}
+              handleCheckboxChange={(checked) =>
+                handleCheckListItem(item.id, checked)
+              }
+              handleValueUpdate={(payload) =>
+                handleUpdateListItem(item.id, payload)
+              }
+              handleRemove={() => handleRemoveListItem(item.id)}
             />
           ))
         )}

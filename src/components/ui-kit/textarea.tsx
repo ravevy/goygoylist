@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 
 interface AutoGrowTextareaProps {
   id: string
+  disabled: boolean
   value: string
   setValue: (value: string) => void
   className?: string
@@ -9,6 +10,7 @@ interface AutoGrowTextareaProps {
 
 export default function AutoGrowTextarea({
   id,
+  disabled,
   value,
   setValue,
   className
@@ -28,6 +30,7 @@ export default function AutoGrowTextarea({
   return (
     <textarea
       id={id}
+      disabled={disabled}
       ref={textareaRef}
       value={value}
       onChange={handleChange}

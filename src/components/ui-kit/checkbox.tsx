@@ -35,32 +35,27 @@ export const Checkbox = ({
   return (
     <label
       htmlFor={id}
-      className={`flex flex-row items-center text-xs ${className}`}
+      className={`flex! flex-col text-xs leading-5.5 ${className}`}
     >
-      {loading ? (
-        <Spinner
-          className="mr-[11.5px] ml-[5.5px] inline-block size-3"
-          variant="diamond"
-        />
-      ) : (
-        <input
-          id={id}
-          type="checkbox"
-          className={`nes-checkbox ${theme === 'dark' ? 'is-dark' : ''}`}
-          checked={checked}
-          onChange={handleChange}
-        />
-      )}
-      {label && (
-        <span className="">
-          <span className="leading-5">{label}</span>
-          {description && (
-            <>
-              <br />
-              <span className="text-xs text-[#666666]">{description}</span>
-            </>
-          )}
-        </span>
+      <span>
+        {loading ? (
+          <Spinner
+            className="mr-[11.5px] ml-[5.5px] inline-block size-3"
+            variant="diamond"
+          />
+        ) : (
+          <input
+            id={id}
+            type="checkbox"
+            className={`nes-checkbox ${theme === 'dark' ? 'is-dark' : ''}`}
+            checked={checked}
+            onChange={handleChange}
+          />
+        )}
+        <span>{label && <span className="leading-5">{label}</span>}</span>
+      </span>
+      {description && (
+        <span className="text-xs leading-5 text-[#666666]">{description}</span>
       )}
     </label>
   )
