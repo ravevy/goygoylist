@@ -16,6 +16,7 @@ import {
 } from '@/lib/validation/listItems.schema'
 import { Container } from '../ui-kit/container'
 import SummaryCardItem from './SummaryCardItem'
+import { Balloon } from '../ui-kit/balloon'
 
 interface DetailedListProps {
   id: string
@@ -26,6 +27,7 @@ export default function DetailedList({ id }: DetailedListProps) {
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState<ListWithItemsSchemaType>()
   const [error, setError] = useState<string | null>(null)
+  const [titleError, setTitleError] = useState(false)
   const [newItem, setNewItem] = useState<ListItemInsertSchemaType>({
     title: '',
     description: null
@@ -112,6 +114,8 @@ export default function DetailedList({ id }: DetailedListProps) {
           title: '',
           description: null
         })
+      } else {
+        setTitleError(true)
       }
     }
   }
@@ -204,7 +208,11 @@ export default function DetailedList({ id }: DetailedListProps) {
             type="text"
             placeholder="Add a title"
             value={newItem.title}
-            onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+            variant={titleError ? 'error' : 'default'}
+            onChange={(e) => {
+              setNewItem({ ...newItem, title: e.target.value })
+              setTitleError(false)
+            }}
           />
           <Input
             label="Description"
@@ -220,6 +228,13 @@ export default function DetailedList({ id }: DetailedListProps) {
           <Button type="submit" variant="primary" size="sm" className="w-fit">
             Submit
           </Button>
+          {titleError && (
+            <Balloon direction="right">
+              <p className="is-error text-xs">
+                No list item has been added yet. Add a new one!
+              </p>
+            </Balloon>
+          )}
         </form>
       </Container>
     </div>

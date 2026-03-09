@@ -40,7 +40,7 @@ export const Input = ({
   }
 
   const containerClass = inline ? 'nes-field is-inline' : 'nes-field'
-  const inputClass = `nes-input ${theme === 'dark' ? 'is-dark' : variantClassMap[variant]} ${sizeClassMap[size]} ${className}`
+  const inputClass = `nes-input ${theme === 'dark' ? 'is-dark ' + variantClassMap[variant] : variantClassMap[variant]} ${sizeClassMap[size]} ${className}`
 
   return (
     <div
@@ -54,7 +54,11 @@ export const Input = ({
       {label && (
         <label
           htmlFor={props.id}
-          className={sizeClassMap[size]}
+          className={[
+            sizeClassMap[size],
+            'nes-text',
+            variantClassMap[variant]
+          ].join(' ')}
           style={variant === 'dark' ? { color: '#fff' } : undefined}
         >
           {label}

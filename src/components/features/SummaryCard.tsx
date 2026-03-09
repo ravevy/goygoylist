@@ -17,17 +17,25 @@ export interface SummaryCardProps {
 export default function SummaryCard({ id, title, items }: SummaryCardProps) {
   return (
     <Container className="flex h-105 w-full flex-col outline-0 focus:outline-0!">
-      <h1 className="underline">{title}</h1>
+      <h1 className="mb-2 underline">{title}</h1>
       <div className="flex flex-col overflow-hidden">
-        {items.slice(0, 10).map((item) => (
-          <Checkbox
-            key={item.id}
-            id={item.id}
-            label={item.title}
-            checked={Boolean(item.completed_at)}
-            onChange={item.handleChange}
-          />
-        ))}
+        {items.length === 0 ? (
+          <p className="text-xs">
+            No list item has been added yet. Add a new one!
+          </p>
+        ) : (
+          items
+            .slice(0, 10)
+            .map((item) => (
+              <Checkbox
+                key={item.id}
+                id={item.id}
+                label={item.title}
+                checked={Boolean(item.completed_at)}
+                onChange={item.handleChange}
+              />
+            ))
+        )}
       </div>
       <Button
         size="sm"
