@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect
+} from 'react'
 
 type Theme = 'light' | 'dark'
 
@@ -17,7 +23,35 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
+    localStorage.setItem('theme', newTheme)
   }
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme') as Theme | null
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+
+    const applyTheme = (theme: Theme) => {
+      setTheme(theme)
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    if (storedTheme) {
+      applyTheme(storedTheme)
+      return
+    }
+
+    applyTheme(media.matches ? 'dark' : 'light')
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      applyTheme(e.matches ? 'dark' : 'light')
+    }
+
+    media.addEventListener('change', handleChange)
+
+    return () => {
+      media.removeEventListener('change', handleChange)
+    }
+  }, [])
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
