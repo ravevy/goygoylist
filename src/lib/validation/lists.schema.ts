@@ -15,7 +15,7 @@ export const listWithItemsSchema = listSchema.extend({
 export const listsWithItemsSchema = z.array(listWithItemsSchema)
 
 export const listInsertSchema = z.object({
-  title: z.string('No title has been entered')
+  title: z.string('No title has been entered').min(1)
 })
 
 export const listUpdateSchema = z.object({

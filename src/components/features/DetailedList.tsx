@@ -229,9 +229,9 @@ export default function DetailedList({ id }: DetailedListProps) {
             Submit
           </Button>
           {titleError && (
-            <Balloon direction="right">
+            <Balloon showClippy direction="right">
               <p className="is-error text-xs">
-                No list item has been added yet. Add a new one!
+                You need to add a title for your list item.
               </p>
             </Balloon>
           )}

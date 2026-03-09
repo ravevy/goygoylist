@@ -29,18 +29,20 @@ export const Balloon = ({
 
   const directionClass = direction === 'left' ? 'from-left' : 'from-right'
 
-  const balloonClass = `nes-balloon ${directionClass} ${theme === 'dark' ? 'is-dark ' + variantClassMap[variant] : variantClassMap[variant]} ${className}`
+  const balloonClass = `nes-balloon ${directionClass} ${theme === 'dark' ? 'is-dark ' + variantClassMap[variant] : variantClassMap[variant]}`
 
   return (
-    <div className="flex items-end">
+    <div className={'flex items-end justify-center ' + className}>
       <div className={balloonClass}>{children}</div>
-      <Image
-        src="/assets/clippy.webp"
-        alt="microsoft helper clippy image"
-        height={100}
-        width={100}
-        className="aspect-79/126 max-h-30 w-auto"
-      />
+      {showClippy && (
+        <Image
+          src="/assets/clippy.webp"
+          alt="microsoft helper clippy image"
+          height={100}
+          width={100}
+          className="aspect-79/126 max-h-30 w-auto"
+        />
+      )}
     </div>
   )
 }
