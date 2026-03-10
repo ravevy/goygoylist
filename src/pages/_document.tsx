@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link
-          href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+          href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=optional"
           rel="stylesheet"
         />
         <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />

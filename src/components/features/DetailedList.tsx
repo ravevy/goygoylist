@@ -11,7 +11,6 @@ import {
   removeListItem,
   updateListItem
 } from '@/lib/services/listItems.services'
-import { Checkbox } from '../ui-kit/checkbox'
 import { Input } from '../ui-kit/input'
 import {
   ListItemInsertSchemaType,

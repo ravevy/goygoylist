@@ -1,9 +1,6 @@
 import { useState } from 'react'
-import { Button } from '../ui-kit/button'
 import { Dialog } from '../ui-kit/dialog'
-import { ListInsertSchemaType } from '@/lib/validation/lists.schema'
-import { insertList, removeList } from '@/lib/services/lists.services'
-import { SummaryCardListRef } from './SummaryCardList'
+import { removeList } from '@/lib/services/lists.services'
 import { useRouter } from 'next/router'
 
 interface RemoveListDialogProps {

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import AddListDialog from './AddListDialog'
-import { Balloon } from '../ui-kit/balloon'
 import { Container } from '../ui-kit/container'
 import { SummaryCardListRef } from './SummaryCardList'
 
