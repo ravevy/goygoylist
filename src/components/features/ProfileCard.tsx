@@ -221,11 +221,16 @@ function PasswordForm({ onCancel }: { onCancel: () => void }) {
             handleChangePassword()
           }}
           disabled={loading}
+          className="w-full"
         >
-          {loading ? <Spinner className="mx-auto size-6" /> : 'Save Password'}
+          {loading ? (
+            <Spinner className="mx-auto size-6" variant="diamond" />
+          ) : (
+            'Save Password'
+          )}
         </Button>
 
-        <Button variant="warning" onClick={onCancel}>
+        <Button variant="warning" onClick={onCancel} className="w-full">
           Cancel
         </Button>
       </div>
