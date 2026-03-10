@@ -2,6 +2,7 @@ import ProfileCard, { IconType } from '@/components/features/ProfileCard'
 import { Container } from '@/components/ui-kit/container'
 import { Spinner } from '@/components/ui-kit/spinner'
 import { getProfile, updateProfile } from '@/lib/services/profiles.services'
+import { supabase } from '@/lib/supabase/client'
 import {
   ProfileSchemaType,
   ProfileUpdateSchemaType
@@ -14,10 +15,13 @@ export default function Profile() {
 
   const handleGetProfile = async () => {
     setLoading(true)
-    const profile = await getProfile()
-    if (profile.success) {
-      setProfile(profile.data)
-      setLoading(false)
+    const authData = await supabase.auth.getUser()
+    if (authData.data.user) {
+      const profile = await getProfile(authData.data.user.id)
+      if (profile.success) {
+        setProfile(profile.data)
+        setLoading(false)
+      }
     }
   }
 

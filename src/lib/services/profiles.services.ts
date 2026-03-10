@@ -8,8 +8,14 @@ import {
   profileUpdateSchema
 } from '../validation/profiles.schema'
 
-export async function getProfile(): Promise<GetResults<ProfileSchemaType>> {
-  const { data, error } = await supabase.from('profiles').select('*').single()
+export async function getProfile(
+  userId: string
+): Promise<GetResults<ProfileSchemaType>> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single()
 
   if (error) {
     return {
