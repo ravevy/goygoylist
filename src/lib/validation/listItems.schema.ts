@@ -16,7 +16,7 @@ export const listItemInsertSchema = z.object({
 })
 
 export const listItemUpdateSchema = z.object({
-  title: z.string().optional(),
+  title: z.string().min(1).optional(),
   description: z.string().nullable().optional(),
   completed_at: z.string().nullable().optional()
 })

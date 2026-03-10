@@ -19,7 +19,7 @@ export const listInsertSchema = z.object({
 })
 
 export const listUpdateSchema = z.object({
-  title: z.string('No title has been entered')
+  title: z.string('No title has been entered').min(1)
 })
 
 export type ListSchemaType = z.infer<typeof listSchema>

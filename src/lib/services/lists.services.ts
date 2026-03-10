@@ -121,3 +121,13 @@ export async function updateList(
 
   return { success: true, data: parsed.data }
 }
+
+export async function removeList(listId: string): Promise<GetResults<null>> {
+  const { data, error } = await supabase.from('lists').delete().eq('id', listId)
+
+  if (error) {
+    return { success: false, type: 'supabase', error }
+  }
+
+  return { success: true, data: data }
+}

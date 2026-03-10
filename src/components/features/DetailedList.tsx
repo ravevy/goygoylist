@@ -1,5 +1,8 @@
-import { getListWithItems } from '@/lib/services/lists.services'
-import { ListWithItemsSchemaType } from '@/lib/validation/lists.schema'
+import { getListWithItems, updateList } from '@/lib/services/lists.services'
+import {
+  ListUpdateSchemaType,
+  ListWithItemsSchemaType
+} from '@/lib/validation/lists.schema'
 import { useEffect, useState } from 'react'
 import { Spinner } from '../ui-kit/spinner'
 import { Button } from '../ui-kit/button'
@@ -17,6 +20,7 @@ import {
 import { Container } from '../ui-kit/container'
 import SummaryCardItem from './DetailedListItem'
 import { Balloon } from '../ui-kit/balloon'
+import RemoveListDialog from './RemoveListDialog'
 
 interface DetailedListProps {
   id: string
@@ -24,30 +28,34 @@ interface DetailedListProps {
 
 export default function DetailedList({ id }: DetailedListProps) {
   const [updatingKey, setUpdatingKey] = useState<null | string>(null)
-  const [loading, setLoading] = useState(true)
+  const [loadingPage, setLoadingPage] = useState(true)
   const [list, setList] = useState<ListWithItemsSchemaType>()
   const [error, setError] = useState<string | null>(null)
   const [titleError, setTitleError] = useState(false)
+  const [updating, setUpdating] = useState<boolean>(false)
+  const [loadingTitle, setLoadingTitle] = useState(false)
+  const [titleValue, setTitleValue] = useState(list?.title ?? '')
   const [newItem, setNewItem] = useState<ListItemInsertSchemaType>({
     title: '',
     description: null
   })
 
   const fetchList = async () => {
-    setLoading(true)
+    setLoadingPage(true)
     setError(null)
 
     const result = await getListWithItems(id)
 
     if (result.success) {
       setList(result.data)
+      setTitleValue(result.data.title)
     } else {
       setError(
         'There is an error fetching lists. Connect to your administrator to fix the issue.'
       )
     }
 
-    setLoading(false)
+    setLoadingPage(false)
   }
 
   const toggleUpdate = (key: string) => {
@@ -136,11 +144,29 @@ export default function DetailedList({ id }: DetailedListProps) {
     }
   }
 
+  const handleUpdateList = async (
+    listId: string,
+    payload: ListUpdateSchemaType
+  ) => {
+    setLoadingTitle(true)
+    const updatedItem = await updateList(listId, payload)
+
+    if (updatedItem.success && list) {
+      setList({
+        ...list,
+        title: updatedItem.data.title
+      })
+      setUpdating(false)
+      setTitleValue(updatedItem.data.title)
+    }
+    setLoadingTitle(false)
+  }
+
   useEffect(() => {
     fetchList()
   }, [])
 
-  if (loading) {
+  if (loadingPage) {
     return (
       <div className="flex items-center justify-center p-8">
         <Spinner className="size-8" variant="diamond" />
@@ -163,7 +189,48 @@ export default function DetailedList({ id }: DetailedListProps) {
 
   return (
     <div className="mx-auto flex flex-col gap-4 md:max-w-3/5 lg:max-w-1/2">
-      <h1 className="mb-4 text-center text-xl">{list?.title}</h1>
+      {updating ? (
+        <div className="mb-4 flex items-center justify-center gap-4">
+          <input
+            id="title"
+            disabled={loadingTitle}
+            className="w-full border-b-2 border-dashed text-center text-xl! leading-5 italic outline-0"
+            type="text"
+            value={titleValue}
+            onChange={({ target }) => {
+              setTitleValue(target.value)
+            }}
+          />
+          {!loadingTitle ? (
+            <button
+              className="flex h-fit items-center justify-center p-1"
+              onClick={() => {
+                if (list?.id) handleUpdateList(list?.id, { title: titleValue })
+              }}
+            >
+              <i className="hn hn-save-solid" />
+            </button>
+          ) : (
+            <Spinner
+              className="flex size-6 h-fit shrink-0 items-center justify-center p-1"
+              variant="diamond"
+            />
+          )}
+        </div>
+      ) : (
+        <div className="mb-4 flex items-center justify-center gap-4">
+          <h1 className="mb-0! text-center text-xl">{list?.title}</h1>
+          <button
+            className="flex items-center justify-center p-1"
+            onClick={() => setUpdating(true)}
+          >
+            <i className="hn hn-pencil font-xl" />
+          </button>
+          {list?.title && list?.id && (
+            <RemoveListDialog listTitle={list.title} listId={list.id} />
+          )}
+        </div>
+      )}
       <Container className="flex flex-col">
         {list?.items.length === 0 ? (
           <p className="text-center text-sm">
