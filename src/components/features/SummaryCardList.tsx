@@ -1,6 +1,12 @@
 import { getListsWithItems } from '@/lib/services/lists.services'
 import { ListsWithItemsSchemaType } from '@/lib/validation/lists.schema'
-import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
+import {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useCallback
+} from 'react'
 import SummaryCard from './SummaryCard'
 import { Spinner } from '../ui-kit/spinner'
 import { Button } from '../ui-kit/button'
@@ -15,7 +21,7 @@ const SummaryCardList = forwardRef<SummaryCardListRef>((props, ref) => {
   const [lists, setLists] = useState<ListsWithItemsSchemaType>([])
   const [error, setError] = useState<string | null>(null)
 
-  const fetchLists = async () => {
+  const fetchLists = useCallback(async () => {
     setLoading(true)
     setError(null)
 
@@ -30,7 +36,7 @@ const SummaryCardList = forwardRef<SummaryCardListRef>((props, ref) => {
     }
 
     setLoading(false)
-  }
+  }, [])
 
   const handleUpdateListItem = async (itemId: string, checked: boolean) => {
     const completedState = checked ? new Date().toISOString() : null
@@ -62,7 +68,7 @@ const SummaryCardList = forwardRef<SummaryCardListRef>((props, ref) => {
 
   useEffect(() => {
     fetchLists()
-  }, [])
+  }, [fetchLists])
 
   if (loading) {
     return (

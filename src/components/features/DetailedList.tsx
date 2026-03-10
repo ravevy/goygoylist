@@ -3,7 +3,7 @@ import {
   ListUpdateSchemaType,
   ListWithItemsSchemaType
 } from '@/lib/validation/lists.schema'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Spinner } from '../ui-kit/spinner'
 import { Button } from '../ui-kit/button'
 import {
@@ -39,7 +39,7 @@ export default function DetailedList({ id }: DetailedListProps) {
     description: null
   })
 
-  const fetchList = async () => {
+  const fetchList = useCallback(async () => {
     setLoadingPage(true)
     setError(null)
 
@@ -55,7 +55,7 @@ export default function DetailedList({ id }: DetailedListProps) {
     }
 
     setLoadingPage(false)
-  }
+  }, [id])
 
   const toggleUpdate = (key: string) => {
     if (updatingKey === key) {
@@ -66,20 +66,22 @@ export default function DetailedList({ id }: DetailedListProps) {
   }
 
   const handleCheckListItem = async (itemId: string, checked: boolean) => {
-    const completedState = checked ? new Date().toISOString() : null
-    const checkedItem = await updateListItem(itemId, {
-      completed_at: completedState
-    })
-
-    if (checkedItem.success && list) {
-      setList({
-        ...list,
-        items: list.items.map((item) =>
-          item.id === checkedItem.data.id
-            ? { ...item, completed_at: completedState }
-            : item
-        )
+    if (list) {
+      const completedState = checked ? new Date().toISOString() : null
+      const checkedItem = await updateListItem(itemId, {
+        completed_at: completedState
       })
+
+      if (checkedItem.success) {
+        setList({
+          ...list,
+          items: list.items.map((item) =>
+            item.id === checkedItem.data.id
+              ? { ...item, completed_at: completedState }
+              : item
+          )
+        })
+      }
     }
   }
 
@@ -87,27 +89,29 @@ export default function DetailedList({ id }: DetailedListProps) {
     itemId: string,
     payload: ListItemUpdateSchemaType
   ) => {
-    const updatedItem = await updateListItem(itemId, payload)
+    if (list) {
+      const updatedItem = await updateListItem(itemId, payload)
 
-    if (updatedItem.success && list) {
-      setList({
-        ...list,
-        items: list.items.map((item) =>
-          item.id === updatedItem.data.id
-            ? {
-                ...item,
-                title: updatedItem.data.title ?? item.title,
-                description: updatedItem.data.description
-              }
-            : item
-        )
-      })
+      if (updatedItem.success) {
+        setList({
+          ...list,
+          items: list.items.map((item) =>
+            item.id === updatedItem.data.id
+              ? {
+                  ...item,
+                  title: updatedItem.data.title ?? item.title,
+                  description: updatedItem.data.description
+                }
+              : item
+          )
+        })
+      }
     }
   }
 
   const handleInsertListItem = async (payload: ListItemInsertSchemaType) => {
-    if (list?.id) {
-      const insertedListItem = await insertListItem(list.id, payload)
+    if (list) {
+      const insertedListItem = await insertListItem(id, payload)
 
       if (insertedListItem.success) {
         setList({
@@ -147,23 +151,25 @@ export default function DetailedList({ id }: DetailedListProps) {
     listId: string,
     payload: ListUpdateSchemaType
   ) => {
-    setLoadingTitle(true)
-    const updatedItem = await updateList(listId, payload)
+    if (list) {
+      setLoadingTitle(true)
+      const updatedItem = await updateList(listId, payload)
 
-    if (updatedItem.success && list) {
-      setList({
-        ...list,
-        title: updatedItem.data.title
-      })
-      setUpdating(false)
-      setTitleValue(updatedItem.data.title)
+      if (updatedItem.success) {
+        setList({
+          ...list,
+          title: updatedItem.data.title
+        })
+        setUpdating(false)
+        setTitleValue(updatedItem.data.title)
+      }
+      setLoadingTitle(false)
     }
-    setLoadingTitle(false)
   }
 
   useEffect(() => {
     fetchList()
-  }, [])
+  }, [fetchList])
 
   if (loadingPage) {
     return (
@@ -204,7 +210,7 @@ export default function DetailedList({ id }: DetailedListProps) {
             <button
               className="flex h-fit items-center justify-center p-1"
               onClick={() => {
-                if (list?.id) handleUpdateList(list?.id, { title: titleValue })
+                handleUpdateList(id, { title: titleValue })
               }}
             >
               <i className="hn hn-save-solid" />
@@ -225,8 +231,8 @@ export default function DetailedList({ id }: DetailedListProps) {
           >
             <i className="hn hn-pencil font-xl" />
           </button>
-          {list?.title && list?.id && (
-            <RemoveListDialog listTitle={list.title} listId={list.id} />
+          {list?.title && (
+            <RemoveListDialog listTitle={list.title} listId={id} />
           )}
         </div>
       )}
