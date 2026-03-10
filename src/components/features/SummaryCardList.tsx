@@ -1,12 +1,16 @@
 import { getListsWithItems } from '@/lib/services/lists.services'
 import { ListsWithItemsSchemaType } from '@/lib/validation/lists.schema'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import SummaryCard from './SummaryCard'
 import { Spinner } from '../ui-kit/spinner'
 import { Button } from '../ui-kit/button'
 import { updateListItem } from '@/lib/services/listItems.services'
 
-export default function SummaryCardList() {
+export interface SummaryCardListRef {
+  refetch: () => Promise<void>
+}
+
+const SummaryCardList = forwardRef<SummaryCardListRef>((props, ref) => {
   const [loading, setLoading] = useState(true)
   const [lists, setLists] = useState<ListsWithItemsSchemaType>([])
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +51,14 @@ export default function SummaryCardList() {
       )
     }
   }
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      refetch: fetchLists
+    }),
+    [fetchLists]
+  )
 
   useEffect(() => {
     fetchLists()
@@ -101,4 +113,8 @@ export default function SummaryCardList() {
       ))}
     </div>
   )
-}
+})
+
+SummaryCardList.displayName = 'SummaryCardList'
+
+export default SummaryCardList

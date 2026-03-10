@@ -5,12 +5,17 @@ import { ListInsertSchemaType } from '@/lib/validation/lists.schema'
 import { Input } from '../ui-kit/input'
 import { insertList } from '@/lib/services/lists.services'
 import { Balloon } from '../ui-kit/balloon'
+import { SummaryCardListRef } from './SummaryCardList'
 
 interface AddListDialogProps {
   setSuccess: (success: boolean) => void
+  summaryCardListRef: React.RefObject<SummaryCardListRef>
 }
 
-export default function AddListDialog({ setSuccess }: AddListDialogProps) {
+export default function AddListDialog({
+  setSuccess,
+  summaryCardListRef
+}: AddListDialogProps) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [titleValue, setTitleValue] = useState<string>('')
@@ -26,6 +31,7 @@ export default function AddListDialog({ setSuccess }: AddListDialogProps) {
       handleSuccessTimeout()
       setIsModalOpen(false)
       setTitleValue('')
+      await summaryCardListRef.current?.refetch()
     } else {
       setError(true)
       setSuccess(false)
