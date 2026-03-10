@@ -9,6 +9,7 @@ export default function Document() {
           rel="stylesheet"
         />
         <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
       </Head>
       <body className="antialiased">
         <Main />
