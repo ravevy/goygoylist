@@ -195,7 +195,7 @@ export default function DetailedList({ id }: DetailedListProps) {
   return (
     <div className="mx-auto flex flex-col gap-4 md:max-w-3/5 lg:max-w-1/2">
       {updating ? (
-        <div className="mb-4 flex items-center justify-center gap-4">
+        <div className="mt-4 mb-4 flex items-center justify-center gap-4">
           <input
             id="title"
             disabled={loadingTitle}
@@ -223,7 +223,7 @@ export default function DetailedList({ id }: DetailedListProps) {
           )}
         </div>
       ) : (
-        <div className="mb-4 flex items-center justify-center gap-4">
+        <div className="mt-4 mb-4 flex items-center justify-center gap-4">
           <h1 className="mb-0! text-center text-xl">{list?.title}</h1>
           <button
             className="flex items-center justify-center p-1"

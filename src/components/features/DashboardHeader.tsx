@@ -10,9 +10,9 @@ export default function DashboardHeader({
 }) {
   const [success, setSuccess] = useState<boolean>()
   return (
-    <div className="flex w-full flex-col items-center max-md:flex-wrap">
+    <div className="mt-4 flex w-full flex-col items-center max-md:flex-wrap">
       <div className="flex w-full flex-row items-center justify-between">
-        <h1>Lists</h1>
+        <h1 className="text-xl">Lists</h1>
         <AddListDialog
           setSuccess={(success) => setSuccess(success)}
           summaryCardListRef={summaryCardListRef}
