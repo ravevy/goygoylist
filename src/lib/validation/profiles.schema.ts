@@ -1,5 +1,11 @@
-import { iconTypes } from '@/components/features/ProfileCard'
 import { z } from 'zod'
+
+export const iconTypes = [
+  'bulbasaur',
+  'charmander',
+  'squirtle',
+  'pokeball'
+] as const
 
 export const profileSchema = z.object({
   id: z.uuid('Invalid id'),

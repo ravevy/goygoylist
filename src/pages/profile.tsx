@@ -1,5 +1,4 @@
 import ProfileCard, { IconType } from '@/components/features/ProfileCard'
-import { Button } from '@/components/ui-kit/button'
 import { Container } from '@/components/ui-kit/container'
 import { Spinner } from '@/components/ui-kit/spinner'
 import { getProfile, updateProfile } from '@/lib/services/profiles.services'
@@ -51,7 +50,6 @@ export default function Profile() {
       <Container>
         {profile && (
           <ProfileCard
-            id={profile.id}
             display_name={profile.display_name}
             avatar_icon={profile.avatar_icon as IconType}
             handleUpdateProfile={(payload) =>

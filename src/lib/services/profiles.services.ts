@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/client'
-import { GetResults } from '@/types/shared.types'
+import { GetAuthResults, GetResults } from '@/types/shared.types'
 
 import {
   ProfileSchemaType,
@@ -77,5 +77,27 @@ export async function updateProfile(
   return {
     success: true,
     data: parsed.data
+  }
+}
+
+export async function changePassword(
+  newPassword: string
+): Promise<GetAuthResults<null>> {
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword
+  })
+  console.log(data)
+
+  if (error) {
+    return {
+      success: false,
+      type: 'supabase',
+      error
+    }
+  }
+
+  return {
+    success: true,
+    data: null
   }
 }
