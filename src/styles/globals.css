@@ -38,3 +38,10 @@ input.is-dark:-webkit-autofill:active {
   -webkit-text-fill-color: white !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+.nes-bulbasaur::before,
+.nes-squirtle::before,
+.nes-charmander::before,
+.nes-pokeball::before {
+  transition: box-shadow 300ms ease;
+}

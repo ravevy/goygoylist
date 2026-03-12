@@ -249,6 +249,7 @@ export default function DetailedList({ id }: DetailedListProps) {
               title={item.title}
               description={item.description}
               completed_at={item.completed_at}
+              created_by={item.created_by}
               isUpdating={item.id === updatingKey}
               toggleUpdate={() => toggleUpdate(item.id)}
               handleCheckboxChange={(checked) =>

@@ -4,12 +4,15 @@ import AutoGrowTextarea from '../ui-kit/textarea'
 import { ListItemUpdateSchemaType } from '@/lib/validation/listItems.schema'
 import { Spinner } from '../ui-kit/spinner'
 import { cx } from 'class-variance-authority'
+import { getProfile } from '@/lib/services/profiles.services'
+import { IconType } from './ProfileCard'
 
 interface DetailedListItemProps {
   id: string
   title: string
   description?: string | null
   completed_at?: string | null
+  created_by: string
   isUpdating: boolean
   toggleUpdate: () => void
   handleCheckboxChange: (checked: boolean) => void
@@ -22,6 +25,7 @@ export default function DetailedListItem({
   title,
   description,
   completed_at,
+  created_by,
   isUpdating,
   toggleUpdate,
   handleCheckboxChange,
@@ -31,6 +35,7 @@ export default function DetailedListItem({
   const titleInputRef = useRef<HTMLInputElement>(null)
   const [titleValue, setTitleValue] = useState(title)
   const [descValue, setDescValue] = useState(description)
+  const [avatar, setAvatar] = useState<IconType>('pokeball')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -38,6 +43,10 @@ export default function DetailedListItem({
       titleInputRef.current?.focus()
     }
   }, [isUpdating])
+
+  useEffect(() => {
+    handleGetUser()
+  }, [created_by])
 
   const handleUpdateItem = async () => {
     setLoading(true)
@@ -58,6 +67,13 @@ export default function DetailedListItem({
       await handleRemove()
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGetUser = async () => {
+    const user = await getProfile(created_by)
+    if (user.success) {
+      setAvatar(user.data.avatar_icon || 'pokeball')
     }
   }
 
@@ -149,6 +165,9 @@ export default function DetailedListItem({
                 variant="diamond"
               />
             )}
+            <span className="flex max-h-7.5 w-4 items-center">
+              <i className={`nes-${avatar} max-w-4 scale-25`}></i>
+            </span>
           </div>
         </>
       )}
