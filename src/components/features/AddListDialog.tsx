@@ -60,7 +60,7 @@ export default function AddListDialog({
           setIsModalOpen(false)
         }}
         onConfirm={() => handleInsertList({ title: titleValue })}
-        className="w-1/2"
+        className="md:w-1/2"
         isLoading={isLoading}
       >
         {

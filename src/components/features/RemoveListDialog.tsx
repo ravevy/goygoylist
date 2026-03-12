@@ -44,7 +44,7 @@ export default function RemoveListDialog({
         onConfirm={() => {
           handleRemoveList(listId)
         }}
-        className="w-1/2"
+        className="md:w-1/2"
         isLoading={isLoading}
       >
         <h1 className="text-center text-xl">
