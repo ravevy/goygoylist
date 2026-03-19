@@ -20,12 +20,15 @@ import { Container } from '../ui-kit/container'
 import SummaryCardItem from './DetailedListItem'
 import { Balloon } from '../ui-kit/balloon'
 import RemoveListDialog from './RemoveListDialog'
+import { Separator } from '../ui-kit/separator'
+import { cx } from 'class-variance-authority'
 
 interface DetailedListProps {
   id: string
 }
 
 export default function DetailedList({ id }: DetailedListProps) {
+  const [isCompletedOpen, setIsCompletedOpen] = useState(true)
   const [updatingKey, setUpdatingKey] = useState<null | string>(null)
   const [loadingPage, setLoadingPage] = useState(true)
   const [list, setList] = useState<ListWithItemsSchemaType>()
@@ -242,25 +245,73 @@ export default function DetailedList({ id }: DetailedListProps) {
             No list item has been added yet. Add a new one!
           </p>
         ) : (
-          list?.items.map((item) => (
-            <SummaryCardItem
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              description={item.description}
-              completed_at={item.completed_at}
-              created_by={item.created_by}
-              isUpdating={item.id === updatingKey}
-              toggleUpdate={() => toggleUpdate(item.id)}
-              handleCheckboxChange={(checked) =>
-                handleCheckListItem(item.id, checked)
-              }
-              handleValueUpdate={(payload) =>
-                handleUpdateListItem(item.id, payload)
-              }
-              handleRemove={() => handleRemoveListItem(item.id)}
-            />
-          ))
+          <>
+            {list?.items
+              .filter((item) => !item.completed_at)
+              .map((item) => (
+                <SummaryCardItem
+                  key={item.id}
+                  id={item.id}
+                  title={item.title}
+                  description={item.description}
+                  completed_at={item.completed_at}
+                  created_by={item.created_by}
+                  isUpdating={item.id === updatingKey}
+                  toggleUpdate={() => toggleUpdate(item.id)}
+                  handleCheckboxChange={(checked) =>
+                    handleCheckListItem(item.id, checked)
+                  }
+                  handleValueUpdate={(payload) =>
+                    handleUpdateListItem(item.id, payload)
+                  }
+                  handleRemove={() => handleRemoveListItem(item.id)}
+                />
+              ))}
+            {list?.items.find((i) => i.completed_at) && (
+              <>
+                <Separator />
+                <p
+                  onClick={() => setIsCompletedOpen((prev) => !prev)}
+                  className="flex w-full cursor-pointer items-center justify-between"
+                >
+                  Completed
+                  {isCompletedOpen ? (
+                    <i className="hn hn-angle-up text-2xl"></i>
+                  ) : (
+                    <i className="hn hn-angle-down text-2xl"></i>
+                  )}
+                </p>
+                <div
+                  className={cx(
+                    'w-full overflow-y-auto transition-all duration-150',
+                    isCompletedOpen ? 'max-h-250' : 'max-h-0'
+                  )}
+                >
+                  {list?.items
+                    .filter((item) => item.completed_at)
+                    .map((item) => (
+                      <SummaryCardItem
+                        key={item.id}
+                        id={item.id}
+                        title={item.title}
+                        description={item.description}
+                        completed_at={item.completed_at}
+                        created_by={item.created_by}
+                        isUpdating={item.id === updatingKey}
+                        toggleUpdate={() => toggleUpdate(item.id)}
+                        handleCheckboxChange={(checked) =>
+                          handleCheckListItem(item.id, checked)
+                        }
+                        handleValueUpdate={(payload) =>
+                          handleUpdateListItem(item.id, payload)
+                        }
+                        handleRemove={() => handleRemoveListItem(item.id)}
+                      />
+                    ))}
+                </div>
+              </>
+            )}
+          </>
         )}
       </Container>
       <Container

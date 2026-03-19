@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { JSX, useState } from 'react'
 import { Spinner } from './spinner'
 import { useTheme } from '@/context/themeContext'
 
@@ -6,6 +6,7 @@ type CheckboxProps = {
   id: string
   label?: string
   description?: string | null
+  subitems?: JSX.Element | null
   checked?: boolean
   onChange?: (checked: boolean) => Promise<void> | void
   className?: string
@@ -15,6 +16,7 @@ export const Checkbox = ({
   id,
   label,
   description,
+  subitems,
   checked = false,
   onChange,
   className = ''
@@ -57,6 +59,7 @@ export const Checkbox = ({
       {description && (
         <span className="text-xs leading-5 text-[#666666]">{description}</span>
       )}
+      {subitems && subitems}
     </label>
   )
 }

@@ -6,6 +6,7 @@ import { Spinner } from '../ui-kit/spinner'
 import { cx } from 'class-variance-authority'
 import { getProfile } from '@/lib/services/profiles.services'
 import { IconType } from './ProfileCard'
+import { formatDate } from '@/utils/formatDate'
 
 interface DetailedListItemProps {
   id: string
@@ -120,6 +121,11 @@ export default function DetailedListItem({
                 className="border-initial w-full border-b-2 border-dashed text-xs! leading-5! text-[#666666] italic outline-0"
               />
             </span>
+            {completed_at && (
+              <p className="self-start text-xs! text-gray-700 italic">
+                {formatDate(completed_at)}
+              </p>
+            )}
           </span>
           {!loading ? (
             <button
@@ -142,6 +148,13 @@ export default function DetailedListItem({
             id={id}
             label={title}
             description={description}
+            subitems={
+              completed_at ? (
+                <p className="text-start text-xs! text-gray-700 italic">
+                  {formatDate(completed_at)}
+                </p>
+              ) : null
+            }
             checked={Boolean(completed_at)}
             onChange={handleCheckboxChange}
           />
@@ -165,7 +178,7 @@ export default function DetailedListItem({
                 variant="diamond"
               />
             )}
-            <span className="flex max-h-7.5 w-4 items-center">
+            <span className="flex max-h-7.5 w-10 items-center">
               <i className={`nes-${avatar} max-w-4 scale-25`}></i>
             </span>
           </div>
