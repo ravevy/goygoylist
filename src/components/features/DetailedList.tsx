@@ -20,6 +20,7 @@ import { Container } from '../ui-kit/container'
 import SummaryCardItem from './DetailedListItem'
 import { Balloon } from '../ui-kit/balloon'
 import RemoveListDialog from './RemoveListDialog'
+import ManageListMembersDialog from './ManageListMembersDialog'
 import { Separator } from '../ui-kit/separator'
 import { cx } from 'class-variance-authority'
 
@@ -234,6 +235,7 @@ export default function DetailedList({ id }: DetailedListProps) {
           >
             <i className="hn hn-pencil font-xl" />
           </button>
+          <ManageListMembersDialog listId={id} />
           {list?.title && (
             <RemoveListDialog listTitle={list.title} listId={id} />
           )}
