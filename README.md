@@ -1,40 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# goygoylist
 
-## Getting Started
+A private shared to-do list app with a retro 8-bit aesthetic. Built with Next.js and Supabase.
 
-First, run the development server:
+## What it is
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+A full-stack web app for managing multiple named lists, each containing items that can be added, edited, and marked complete. Both users share the same lists and can see who created each item. The UI is styled with [NES.css](https://nostalgic-css.github.io/NES.css/) for a pixel-art retro feel and supports light/dark themes.
+
+## Features
+
+- **Multiple lists** — create, rename, and delete named lists from the dashboard
+- **List items** — each item has a title, an optional description, and a completion timestamp
+- **Completed section** — completed items are separated into a collapsible section within each list
+- **User attribution** — items show the avatar of whoever created them
+- **Profiles** — each user has a display name and a Pokémon avatar (Bulbasaur, Charmander, Squirtle, or Pokéball)
+- **Light / dark theme** — persisted to localStorage, respects system preference on first visit
+- **Auth** — email/password login via Supabase Auth; sessions are protected and expire automatically
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (Pages Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS 4 + NES.css |
+| UI components | Radix UI + shadcn |
+| Backend / DB | Supabase (PostgreSQL) |
+| Auth | Supabase Auth |
+| Validation | Zod |
+| Git hooks | Husky + lint-staged |
+
+## Architecture
+
+```
+src/
+├── pages/          # Next.js pages (dashboard, list/[id], profile, login)
+├── components/
+│   ├── features/   # Domain components (SummaryCard, DetailedList, ProfileCard, …)
+│   └── ui-kit/     # Generic UI primitives (Button, Input, Dialog, Checkbox, …)
+├── lib/
+│   ├── services/   # Supabase data layer (lists, listItems, profiles)
+│   └── validation/ # Zod schemas for all data types
+├── context/        # Theme context (ThemeProvider + useTheme hook)
+└── types/          # Shared result types + auto-generated Supabase types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Data flow
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+All data operations go through service functions in `lib/services/`. Every service returns a discriminated union:
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```typescript
+type GetResults<T> =
+  | { success: true; data: T }
+  | { success: false; type: 'supabase'; error: PostgrestError }
+  | { success: false; type: 'validation'; error: ZodError }
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Supabase responses are validated against Zod schemas before reaching component state, so invalid shapes from the database surface as typed validation errors rather than silent runtime failures.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Database
 
-## Learn More
+Three tables in Supabase PostgreSQL:
 
-To learn more about Next.js, take a look at the following resources:
+- **`profiles`** — `id`, `display_name`, `avatar_icon`
+- **`lists`** — `id`, `title`, `created_at`, `created_by`
+- **`list_items`** — `id`, `list_id`, `title`, `description`, `created_at`, `created_by`, `completed_at`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Two database views (`list_with_items_ordered`, `list_with_items_view`) handle ordering and denormalization so the client can fetch a list and all its items in a single query.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Auth & routing
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+`ProtectedRoute` wraps every page except `/login`. It checks the Supabase session on mount and subscribes to auth state changes — if the session expires, the user is redirected to `/login` automatically. The app entry point (`/`) immediately redirects to `/dashboard`.
