@@ -5,7 +5,8 @@ import {
   ProfileSchemaType,
   profileSchema,
   ProfileUpdateSchemaType,
-  profileUpdateSchema
+  profileUpdateSchema,
+  profilesArraySchema
 } from '../validation/profiles.schema'
 
 export async function getProfile(
@@ -84,6 +85,27 @@ export async function updateProfile(
     success: true,
     data: parsed.data
   }
+}
+
+export async function getProfiles(
+  excludeUserId: string
+): Promise<GetResults<ProfileSchemaType[]>> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .neq('id', excludeUserId)
+
+  if (error) {
+    return { success: false, type: 'supabase', error }
+  }
+
+  const parsed = profilesArraySchema.safeParse(data)
+
+  if (!parsed.success) {
+    return { success: false, type: 'validation', error: parsed.error }
+  }
+
+  return { success: true, data: parsed.data }
 }
 
 export async function changePassword(

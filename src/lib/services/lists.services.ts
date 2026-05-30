@@ -12,6 +12,7 @@ import {
   listWithItemsSchema
 } from '../validation/lists.schema'
 import { GetResults } from '@/types/shared.types'
+import { updateListMembers, removeListMembers } from './listMembers.services'
 
 export async function getListsWithItems(): Promise<
   GetResults<ListsWithItemsSchemaType>
@@ -57,7 +58,8 @@ export async function getListWithItems(
 }
 
 export async function insertList(
-  payload: ListInsertSchemaType
+  payload: ListInsertSchemaType,
+  memberIds: string[] = []
 ): Promise<GetResults<ListSchemaType>> {
   const payloadValidation = listInsertSchema.safeParse(payload)
 
@@ -83,6 +85,11 @@ export async function insertList(
 
   if (!parsed.success) {
     return { success: false, type: 'validation', error: parsed.error }
+  }
+
+  if (memberIds.length > 0) {
+    const membersResult = await updateListMembers(parsed.data.id, memberIds)
+    if (!membersResult.success) return membersResult
   }
 
   return { success: true, data: parsed.data }
@@ -123,6 +130,9 @@ export async function updateList(
 }
 
 export async function removeList(listId: string): Promise<GetResults<null>> {
+  const membersResult = await removeListMembers(listId)
+  if (!membersResult.success) return membersResult
+
   const { data, error } = await supabase.from('lists').delete().eq('id', listId)
 
   if (error) {

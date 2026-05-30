@@ -66,6 +66,35 @@ export type Database = {
           }
         ]
       }
+      list_members: {
+        Row: {
+          id: string
+          list_id: string
+          user_ids: string[]
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          list_id: string
+          user_ids?: string[]
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          list_id?: string
+          user_ids?: string[]
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'list_members_list_id_fkey'
+            columns: ['list_id']
+            isOneToOne: false
+            referencedRelation: 'lists'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       lists: {
         Row: {
           created_at: string | null

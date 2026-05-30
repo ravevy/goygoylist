@@ -13,6 +13,8 @@ export const profileSchema = z.object({
   avatar_icon: z.enum(iconTypes).optional()
 })
 
+export const profilesArraySchema = z.array(profileSchema)
+
 export const profileUpdateSchema = z.object({
   display_name: z.string().nullable().optional(),
   avatar_icon: z.enum(iconTypes).optional()
