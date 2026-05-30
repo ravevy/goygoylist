@@ -16,6 +16,7 @@ interface SelectProps extends Omit<
   label?: string
   variant?: Variant
   size?: Size
+  placeholder?: string
   options: Option[]
 }
 
@@ -25,6 +26,7 @@ export const Select = ({
   size = 'md',
   options,
   className = '',
+  placeholder,
   ...props
 }: SelectProps) => {
   const { theme } = useTheme()
@@ -71,7 +73,7 @@ export const Select = ({
       <div className={containerClass}>
         <select className={sizeClassMap[size]} {...props}>
           <option value="" disabled hidden>
-            Select...
+            {placeholder || 'Select...'}
           </option>
 
           {options.map((option) => (
