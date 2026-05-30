@@ -67,7 +67,8 @@ export default function ManageListMembersDialog({
   const handleSave = async () => {
     setIsLoading(true)
     const memberIds = selectedMembers.map((member) => member.id)
-    const result = await updateListMembers(listId, memberIds)
+    const userIds = user ? [...new Set([...memberIds, user.id])] : memberIds
+    const result = await updateListMembers(listId, userIds)
 
     if (result.success) {
       setIsOpen(false)

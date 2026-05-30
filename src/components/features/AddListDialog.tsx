@@ -56,7 +56,8 @@ export default function AddListDialog({
     setIsLoading(true)
     setSuccess(false)
     const memberIds = selectedMembers.map((member) => member.id)
-    const insertedList = await insertList(payload, memberIds)
+    const userIds = user ? [...new Set([...memberIds, user.id])] : memberIds
+    const insertedList = await insertList(payload, userIds)
 
     if (insertedList.success) {
       setSuccess(true)
