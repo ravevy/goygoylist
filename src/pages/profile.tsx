@@ -1,8 +1,8 @@
 import ProfileCard, { IconType } from '@/components/features/ProfileCard'
 import { Container } from '@/components/ui-kit/container'
 import { Spinner } from '@/components/ui-kit/spinner'
+import { useAuth } from '@/context/authContext'
 import { getProfile, updateProfile } from '@/lib/services/profiles.services'
-import { supabase } from '@/lib/supabase/client'
 import {
   ProfileSchemaType,
   ProfileUpdateSchemaType
@@ -13,11 +13,12 @@ export default function Profile() {
   const [loading, setLoading] = useState<boolean>(true)
   const [profile, setProfile] = useState<ProfileSchemaType | null>(null)
 
+  const { user } = useAuth()
+
   const handleGetProfile = async () => {
     setLoading(true)
-    const authData = await supabase.auth.getUser()
-    if (authData.data.user) {
-      const profile = await getProfile(authData.data.user.id)
+    if (user && user.id) {
+      const profile = await getProfile(user.id)
       if (profile.success) {
         setProfile(profile.data)
         setLoading(false)
@@ -38,7 +39,7 @@ export default function Profile() {
 
   useEffect(() => {
     handleGetProfile()
-  }, [])
+  }, [user])
 
   if (loading) {
     return (

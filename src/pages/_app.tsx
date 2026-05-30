@@ -4,6 +4,7 @@ import '@hackernoon/pixel-icon-library/fonts/iconfont.css'
 import type { AppProps } from 'next/app'
 import ProtectedRoute from '@/components/protectedRoute'
 import { ThemeProvider } from '@/context/themeContext'
+import { AuthProvider } from '@/context/authContext'
 import { Layout } from '@/components/layout'
 
 const publicPages = ['/login', '/404']
@@ -20,12 +21,14 @@ export default function App({ Component, pageProps, router }: AppProps) {
   }
 
   return (
-    <ThemeProvider>
-      <ProtectedRoute>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ProtectedRoute>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <ProtectedRoute>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ProtectedRoute>
+      </ThemeProvider>
+    </AuthProvider>
   )
 }
